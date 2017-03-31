@@ -37,3 +37,6 @@ LOGGING = {
 
 logging.config.dictConfig(LOGGING)
 WEB_ENDPOINT = 'http://webservices.nextbus.com/service/publicXMLFeed?'
+
+ACCEPTED_COMMANDS = ["agencyList", "routeList", "routeConfig", "predictions", "predictionsForMultiStops", "schedule",
+                     "messages", "vehicleLocations"]
