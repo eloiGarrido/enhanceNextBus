@@ -6,7 +6,7 @@ import tornado.httpclient
 from tornado.concurrent import Future
 import logging
 import logging.config
-import settings as settings
+import handlers.settings as settings
 import json
 import xmltodict
 import datetime as dt
@@ -25,9 +25,9 @@ class MainHandler(tornado.web.RequestHandler):
     Fallback handler for / route
     '''
     def get(self):
-        self.write("Welcome to nextBus Enhanced.\n" + "<br>\n")
-        self.write('Request information with the following query structure:\n<br>\n<br>http://localhost:8888/'
-                   'publicJSONFeed''?command=commandName&a=agencyTag&additionParams..')
+        self.write("Welcome to nextBus Enhanced.\n" +
+                   "<br>\nRequest information with the following query structure:\n<br>\n<br>"
+                   "http://localhost:8888/publicJSONFeed?command=commandName&a=agencyTag&additionParams..")
 
 
 class MessageHandler(tornado.web.RequestHandler):
