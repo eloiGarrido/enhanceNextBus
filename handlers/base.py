@@ -10,13 +10,14 @@ import settings as settings
 import json
 import xmltodict
 import datetime as dt
-
+import time
 # Initialize logger
 logging.config.dictConfig(settings.LOGGING)
 logger = logging.getLogger('nextBus')
 # Init query count tracker
 query_counter = {}
 query_cache = {}
+query_slow = {}
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -49,7 +50,7 @@ class MessageHandler(tornado.web.RequestHandler):
     @gen.coroutine
     def get(self):
         '''
-        RESTfull GET function. 
+        RESTful GET function. 
         :return: Displays NextBus query result in JSON format 
         '''
         # Validate and account for query calls
@@ -64,6 +65,26 @@ class MessageHandler(tornado.web.RequestHandler):
             self.write(query_cache[self.args]['info'])
         else:
             yield self.nextBusClient(url)
+
+    @gen.coroutine
+    def profile_query(self, start, end):
+        '''
+        Store 5 slowest performed queries
+        :param start: Start time of current query
+        :param end: End time of current query
+        :return: None
+        '''
+        query_duration = format(end-start)
+        if len(query_slow) < 5:
+            if self.args not in query_slow:
+                query_slow[self.args] = query_duration
+        else:
+            if min(query_slow.values()) < query_duration:
+                for key, val in query_slow.items():
+                    if val == min(query_slow.values()):
+                        del query_slow[key]
+                        query_slow[self.args] = query_duration
+                        break
 
     @gen.coroutine
     def nextBusClient(self, url):
@@ -85,9 +106,12 @@ class MessageHandler(tornado.web.RequestHandler):
         if response.error:
             logger.error("Error:", response.error)
         else:
+            start = time.time()
             data = xmltodict.parse(response.body.decode('utf-8'), xml_attribs=True)
-            query_cache[self.args] = {'info': json.dumps(data), 'time': dt.datetime.now()}
             self.write(data)
+            end = time.time()
+            yield self.profile_query(start, end)
+            query_cache[self.args] = {'info': json.dumps(data), 'time': dt.datetime.now()}
         self.finish()
 
 
@@ -106,7 +130,7 @@ class SlowestQueriesHandler(tornado.web.RequestHandler):
     '''
     @gen.coroutine
     def get(self):
-        self.write(query_cache)
+        self.write(query_slow)
 
 
 def make_app():
