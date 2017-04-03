@@ -1,0 +1,1 @@
+File to force git to add log directory. Evading the an error on log creation.

@@ -6,7 +6,7 @@ import tornado.httpclient
 from tornado.concurrent import Future
 import logging
 import logging.config
-import handlers.settings as settings
+import settings as settings
 import json
 import xmltodict
 import datetime as dt

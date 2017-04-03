@@ -2,15 +2,11 @@
 import tornado.platform.asyncio as tasyncio
 import configparser
 import logging
-import os
 import unittest
-import sys
 from tornado.testing import AsyncHTTPSTestCase, gen_test
 import ast
 
-sys.path.insert(0, os.path.dirname('/home/eloig/dev/enhanceNextBus/handlers'))
-sys.path.insert(0, os.path.dirname(__file__))
-import handlers.base
+import base
 
 logger = logging.getLogger('nextBus')
 
@@ -28,7 +24,7 @@ if __name__ == '__name__':
 
 class TestBaseApp(AsyncHTTPSTestCase):
     def get_app(self):
-        return handlers.base.make_app()
+        return base.make_app()
 
     def get_new_ioloop(self):
         return tasyncio.AsyncIOMainLoop()
@@ -60,16 +56,16 @@ class TestBaseApp(AsyncHTTPSTestCase):
 
     @gen_test
     def test_validate_command_and_increment(self):
-        mh = handlers.base.MessageHandler
+        mh = base.MessageHandler
         res = yield mh.validate_command_and_increment(mh, 'test')
-        self.assertDictEqual(handlers.base.query_counter, {'agencyList': 2, 'routeConfig': 1})
+        self.assertDictEqual(base.query_counter, {'agencyList': 2, 'routeConfig': 1})
         res = yield mh.validate_command_and_increment(mh, 'agencyList')
-        self.assertDictEqual(handlers.base.query_counter, {'agencyList': 3, 'routeConfig': 1})
+        self.assertDictEqual(base.query_counter, {'agencyList': 3, 'routeConfig': 1})
 
     @gen_test
     def test_cache(self):
-        mh = handlers.base.MessageHandler
-        self.assertDictEqual(handlers.base.query_cache, {})
+        mh = base.MessageHandler
+        self.assertDictEqual(base.query_cache, {})
         query = yield self.http_client.fetch(self.get_url('/publicJSONFeed?command=agencyList'))
-        self.assertIn('command=agencyList', handlers.base.query_cache)
+        self.assertIn('command=agencyList', base.query_cache)
 
