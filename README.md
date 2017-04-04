@@ -8,7 +8,7 @@ This code implements a little NextBus service JSON converter in python Tornado. 
 tunnel which redirects all RESTful queries to NextBus service (http://webservices.nextbus.com). Upon reception, the code
  translates the resulting query information into JSON format and presents it to the user via web interface.
  
-###Web server deployment
+### Web server deployment
  In order to run the web-server, several libraries have to be present in the destination computer.
 1.  Clone repository.
 
@@ -64,7 +64,7 @@ tunnel which redirects all RESTful queries to NextBus service (http://webservice
     
 
     
-###Run web server
+### Run web server
     
 Once the system has been deployed one can run the unittests to validate that the installation has 
 been successful.
@@ -87,7 +87,7 @@ been successful.
     To launch the web server go to the root folder and execute the `run.sh` script in the same fashion as the unittest script.
     The terminal will show the message: `Starting server on port 8888` when the server is ready to receive requests.
     
-###Web server use cases
+### Web server use cases
 
 This web-server accepts the same commands as NextBus Public XML Feed. However, in order to differentiate ourselves the access
   end point has been modified and two more endpoints have been added.
