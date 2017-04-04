@@ -63,8 +63,10 @@ class MessageHandler(tornado.web.RequestHandler):
         if self.args in query_cache:
             logger.info('Accessing cached information')
             self.write(query_cache[self.args]['info'])
+            self.finish()
         else:
             yield self.nextBusClient(url)
+
 
     @gen.coroutine
     def profile_query(self, start, end):
@@ -122,6 +124,7 @@ class QueryCounterHanlder(tornado.web.RequestHandler):
     @gen.coroutine
     def get(self):
         self.write(query_counter)
+        self.finish()
 
 
 class SlowestQueriesHandler(tornado.web.RequestHandler):
@@ -131,6 +134,7 @@ class SlowestQueriesHandler(tornado.web.RequestHandler):
     @gen.coroutine
     def get(self):
         self.write(query_slow)
+        self.finish()
 
 
 def make_app():
